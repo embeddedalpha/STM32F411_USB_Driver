@@ -10,13 +10,8 @@
 
 
 #include "main.h"
-
 #include "GPIO.h"
-
-#define USB_Device_FS_GLOBAL  ((USB_OTG_GlobalTypeDef *)(USB_OTG_FS_PERIPH_BASE + USB_OTG_GLOBAL_BASE))
-#define USB_Device_FS_DEVICE  ((USB_OTG_DeviceTypeDef *)(USB_OTG_FS_PERIPH_BASE + USB_OTG_DEVICE_BASE))
-#define USB_Device_FS_PCGCCTL ((uint32_t *)(USB_OTG_FS_PERIPH_BASE + USB_OTG_PCGCCTL_BASE))
-
+#include "USB_Driver_Common.h"
 
 
 void USB_Device_Pins_Init(void);

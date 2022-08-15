@@ -1,0 +1,3 @@
+C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Include/core_cm4.h:2064:26:ITM_SendChar	16	static,ignoring_inline_asm
+../Inc/main.h:175:22:Print_Log	120	static
+../USB_Driver/USB_Device_Framework.c:14:6:USB_Device_Mode_Init	8	static

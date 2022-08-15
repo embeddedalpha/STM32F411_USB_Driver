@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include "math.h"
 #include "inttypes.h"
-
+#include "core_cm4.h"
 
 extern int baud;
 #define NONE 0
@@ -172,6 +172,18 @@ __STATIC_INLINE uint32_t Delay_s(unsigned long s)
 }
 
 
+__STATIC_INLINE void Print_Log(char *msg,...)
+{
+	char buff[100];
+	va_list args;
+	va_start(args, msg);
+	vsprintf(buff, msg, args);
+
+	for(int i = 0; i<= strlen(buff); i++)
+	{
+		ITM_SendChar(buff[i]);
+	}
+}
 
 
 #endif /* MAIN_H_ */

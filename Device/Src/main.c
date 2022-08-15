@@ -21,9 +21,13 @@
 
 int main(void)
 {
+	MCU_Clock_Setup();
 
 
 
-    /* Loop forever */
-	for(;;);
+
+	for(;;)
+	{
+
+	}
 }

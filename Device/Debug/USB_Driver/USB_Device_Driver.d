@@ -10,7 +10,8 @@ USB_Driver/USB_Device_Driver.o: ../USB_Driver/USB_Device_Driver.c \
  C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
  C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h \
  C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h \
- C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/GPIO/GPIO.h
+ C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/GPIO/GPIO.h \
+ ../USB_Driver/USB_Driver_Common.h
 ../USB_Driver/USB_Device_Driver.h:
 ../Inc/main.h:
 C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h:
@@ -24,3 +25,4 @@ C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/D
 C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h:
 C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/Inc/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h:
 C:/Users/Kunal/STM32CubeIDE/STM32F411_Workspace/STM32F411_USB_Driver/GPIO/GPIO.h:
+../USB_Driver/USB_Driver_Common.h:
