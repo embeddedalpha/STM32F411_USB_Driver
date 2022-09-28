@@ -61,55 +61,54 @@ void USB_Device_Disconnect(void)
 	USB_OTG_FS_DEVICE -> DCTL |= USB_OTG_DCTL_SDIS; //enable software disconnect
 }
 
-static void USB_Device_Configure_Endpoints(uint8_t endpoint_number, uint8_t endpoint_size)
+static void USB_Device_Configure_Endpoint0(uint8_t endpoint_size)
 {
-	USB_OTG_FS_DEVICE -> DAINTMSK |= (1 << endpoint_number) | (1 << (16 + endpoint_number));
-
-	switch (endpoint_number) {
-		case 0:
-		{
-			USB_OTG_FS_INEndpoint0 -> DIEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_INEndpoint0 -> DIEPCTL |= endpoint_size << 0;
-			USB_OTG_FS_INEndpoint0 -> DIEPCTL |= USB_OTG_DIEPCTL_USBAEP | USB_OTG_DIEPCTL_SNAK;
-
-			USB_OTG_FS_OUTEndpoint0 -> DOEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_OUTEndpoint0 -> DOEPCTL |= USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA;
-		}
-			break;
-
-		case 1:
-		{
-			USB_OTG_FS_INEndpoint1 -> DIEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_INEndpoint1 -> DIEPCTL |= endpoint_size << 0;
-			USB_OTG_FS_INEndpoint1 -> DIEPCTL |= USB_OTG_DIEPCTL_USBAEP | USB_OTG_DIEPCTL_SNAK;
-
-			USB_OTG_FS_OUTEndpoint1 -> DOEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_OUTEndpoint1 -> DOEPCTL |= USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA;
-		}
-			break;
-		case 2:
-		{
-			USB_OTG_FS_INEndpoint2 -> DIEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_INEndpoint2 -> DIEPCTL |= endpoint_size << 0;
-			USB_OTG_FS_INEndpoint2 -> DIEPCTL |= USB_OTG_DIEPCTL_USBAEP | USB_OTG_DIEPCTL_SNAK;
-
-			USB_OTG_FS_OUTEndpoint2 -> DOEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_OUTEndpoint2 -> DOEPCTL |= USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA;
-		}
-			break;
-		case 3:
-		{
-			USB_OTG_FS_INEndpoint3 -> DIEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_INEndpoint3 -> DIEPCTL |= endpoint_size << 0;
-			USB_OTG_FS_INEndpoint3 -> DIEPCTL |= USB_OTG_DIEPCTL_USBAEP | USB_OTG_DIEPCTL_SNAK;
-
-			USB_OTG_FS_OUTEndpoint3 -> DOEPCTL &= ~0xFFFFFFFF;
-			USB_OTG_FS_OUTEndpoint3 -> DOEPCTL |= USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA;
-		}
-			break;
-	}
+	USB_OTG_FS_DEVICE -> DAINTMSK |= (1 << 0) | (1 << 16);
+	USB_OTG_FS_INEndpoint0 -> DIEPCTL &= ~0xFFFFFFFF;
+	USB_OTG_FS_INEndpoint0 -> DIEPCTL |= _VAL2FLD(USB_OTG_DIEPCTL_MPSIZ,endpoint_size) << 0;
+	USB_OTG_FS_INEndpoint0 -> DIEPCTL |= USB_OTG_DIEPCTL_USBAEP | USB_OTG_DIEPCTL_SNAK;
+	USB_OTG_FS_OUTEndpoint0 -> DOEPCTL &= ~0xFFFFFFFF;
+	USB_OTG_FS_OUTEndpoint0 -> DOEPCTL |= USB_OTG_DOEPCTL_CNAK | USB_OTG_DOEPCTL_EPENA;
 }
 
+static void USB_Device_Configure_IN_Endpoints(uint8_t endpoint_number, USB_Endpoints_Type endpoint_type, uint16_t endpoint_size)
+{
+	//Unmask all the interrupts of the endpoints we are working with:
+	USB_OTG_FS_DEVICE -> DAINTMSK |= (1 << 16);
+	USB_OTG_FS_INEndpoint0 -> DIEPCTL |= _VAL2FLD(USB_OTG_DIEPCTL_MPSIZ,endpoint_size) << 0;
+	USB_OTG_FS_INEndpoint0 -> DIEPCTL |= USB_OTG_DIEPCTL_USBAEP | USB_OTG_DIEPCTL_SNAK | USB_OTG_DIEPCTL_SD0PID_SEVNFRM;
+	USB_OTG_FS_INEndpoint0 -> DIEPCTL |= _VAL2FLD(USB_OTG_DIEPCTL_EPTYP,endpoint_type);
+}
+
+
+static void USB_Device_Deconofigure_Endpoints(USB_OTG_INEndpointTypeDef *INendpoint,USB_OTG_OUTEndpointTypeDef *OUTendpoint,uint8_t endpoint_number)
+{
+	//Mask all interrupts for particular endpoint
+	USB_OTG_FS_DEVICE -> DAINTMSK &= ~((1 << endpoint_number) | (1 << (16+endpoint_number)));
+
+	//Clear all interrupts
+	INendpoint -> DIEPINT = 0x28FB;
+	OUTendpoint -> DOEPINT = 0x313B;
+
+	//Disable endpoints
+	if(INendpoint -> DIEPCTL & USB_OTG_DIEPCTL_EPENA)
+	{
+		INendpoint -> DIEPCTL |= USB_OTG_DIEPCTL_EPDIS;
+	}
+	//Deactivate endpoint
+	INendpoint -> DIEPCTL &= ~USB_OTG_DIEPCTL_USBAEP;
+
+	if(endpoint_number != 0)
+	{
+		if(OUTendpoint -> DIEPCTL & USB_OTG_DIEPCTL_EPENA)
+		{
+			OUTendpoint -> DIEPCTL |= USB_OTG_DIEPCTL_EPDIS;
+		}
+		//Deactivate endpoint
+		OUTendpoint -> DIEPCTL &= ~USB_OTG_DIEPCTL_USBAEP;
+	}
+
+}
 
 void USB_Device_Global_Interrupt_Handler(void)
 {

@@ -12,7 +12,7 @@
 #include "main.h"
 #include "GPIO.h"
 #include "USB_Driver_Common.h"
-
+#include "USB_Standards.h"
 
 void USB_Device_Pins_Init(void);
 
