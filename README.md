@@ -13,5 +13,5 @@ Run this command on your linux machine:
 </h4>
 
 ```bash
-	sudo tall -f /var/log/syslog
+	sudo tail -f /var/log/syslog
 ```
