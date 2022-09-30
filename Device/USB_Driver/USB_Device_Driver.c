@@ -110,6 +110,30 @@ static void USB_Device_Deconofigure_Endpoints(USB_OTG_INEndpointTypeDef *INendpo
 
 }
 
+
+static void USB_Configure_RX_FIFO(uint16_t size)
+{
+	uint16_t temp;
+
+	temp = 10 + (2 * ((size / 4) + 1));
+
+	USB_OTG_FS_GLOBAL->GRXFSIZ = temp;
+}
+
+static void USB_Configure_TX_FIFO(uint8_t endpoint_number, uint16_t size )
+{
+	uint16_t temp = (size + 3)/4;
+
+	if(endpoint_number == 0)
+	{
+		USB_OTG_FS_GLOBAL -> DIEPTXF0_HNPTXFSIZ = temp << 16;
+	}
+	else
+	{
+		USB_OTG_FS_GLOBAL -> DIEPTXF[endpoint_number -1] |= size << 16;
+	}
+}
+
 void USB_Device_Global_Interrupt_Handler(void)
 {
 	if((USB_OTG_FS_GLOBAL -> GINTSTS) & USB_OTG_GINTSTS_USBRST)
